@@ -43,3 +43,140 @@ print(f"Server response: {response.decode()}")
 
 # Close the connection
 client_socket.close()
+
+//procedure
+Great! Now that you've successfully run the client-server communication using Python, let's break down what happens when the server starts and when the client starts in more detail.
+
+When the Server Starts (on ubuntu-first):
+Server Initialization:
+
+The server creates a socket object using the socket.socket() method. This object will handle communication with clients over the network.
+
+python
+コードをコピーする
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socket.AF_INET: This specifies that the server will use IPv4 addresses for communication.
+
+socket.SOCK_STREAM: This specifies that the socket will use TCP (Transmission Control Protocol), which is reliable and connection-oriented.
+
+Binding to an IP Address and Port:
+
+The server binds its socket to an IP address and a port (in this case, 0.0.0.0 and port 12345).
+
+0.0.0.0 means the server will listen on all network interfaces available to the VM.
+
+python
+コードをコピーする
+server_socket.bind(('0.0.0.0', 12345))
+This means the server is now "listening" for incoming connections on port 12345.
+
+Listening for Incoming Connections:
+
+The server starts listening for incoming connections using server_socket.listen(5).
+
+The number 5 indicates the server can queue up to 5 incoming connection requests (before rejecting further requests if not handled).
+
+python
+コードをコピーする
+server_socket.listen(5)
+The server is now ready and will wait for clients to try to connect.
+
+Accepting Client Connections:
+
+The server waits for a client to initiate a connection. It uses server_socket.accept() to accept an incoming connection from a client. This call blocks (pauses execution) until a client connects.
+
+python
+コードをコピーする
+client_socket, client_address = server_socket.accept()
+Once a client connects, accept() returns two things:
+
+client_socket: A new socket object for communicating with the specific client.
+client_address: The IP address and port of the client that connected.
+Receiving Data from the Client:
+
+Once the connection is established, the server can receive data from the client. The server uses the recv() method to receive up to 1024 bytes of data from the client.
+
+python
+コードをコピーする
+message = client_socket.recv(1024)
+The recv() method blocks until it gets some data from the client.
+
+Sending a Response to the Client:
+
+After receiving the message from the client, the server can send a response back using client_socket.send().
+
+python
+コードをコピーする
+client_socket.send("Message received".encode())
+The message is encoded as bytes before sending. The server sends the string "Message received" back to the client.
+
+Closing the Connection:
+
+Once the server has sent the response, it closes the connection using client_socket.close().
+
+python
+コードをコピーする
+client_socket.close()
+When the Client Starts (on ubuntu-second):
+Client Initialization:
+
+The client creates a socket object, similar to the server, that will communicate with the server.
+
+python
+コードをコピーする
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+Connecting to the Server:
+
+The client uses client_socket.connect() to connect to the server. The client specifies the server's IP address (10.134.57.219) and port (12345).
+
+python
+コードをコピーする
+client_socket.connect(('10.134.57.219', 12345))
+This step establishes the connection between the client and the server. If the server is running and listening on the specified port, the client successfully connects.
+
+Sending Data to the Server:
+
+Once the connection is established, the client sends a message to the server using client_socket.send(). The message is encoded before sending.
+
+python
+コードをコピーする
+client_socket.send("Hello from ubuntu-second!".encode())
+The string "Hello from ubuntu-second!" is sent over the network to the server.
+
+Receiving the Server's Response:
+
+The client then waits to receive a response from the server using client_socket.recv(). The client waits until it receives up to 1024 bytes of data.
+
+python
+コードをコピーする
+response = client_socket.recv(1024)
+The server responds with "Message received", and the client prints this response:
+
+python
+コードをコピーする
+print(f"Server response: {response.decode()}")
+Closing the Connection:
+
+After receiving the server's response, the client closes the connection with the server using client_socket.close().
+
+python
+コードをコピーする
+client_socket.close()
+Summary of the Client-Server Interaction:
+Server-side:
+
+The server creates a socket, binds to an address and port, and listens for incoming connections.
+Upon receiving a connection, the server accepts the client connection, reads data, sends a response, and closes the connection.
+Client-side:
+
+The client creates a socket and connects to the server's IP and port.
+It sends a message, waits for a response from the server, prints the response, and then closes the connection.
+What Happens During the Entire Process:
+Server starts: It listens on the specified port (12345) and waits for clients to connect.
+Client starts: The client connects to the server's IP address (10.134.57.219), sends a message, and waits for the server's response.
+Server receives the message: Once the server gets the message, it processes it (in this case, it just prints it) and then sends a response.
+Client receives the response: The client receives the server’s response, prints it, and closes the connection.
+Server closes the connection: The server also closes the connection after sending the response.
+This basic flow forms the foundation for many types of client-server communication in distributed systems.
+
+Let me know if you need any further clarification or additional steps!
